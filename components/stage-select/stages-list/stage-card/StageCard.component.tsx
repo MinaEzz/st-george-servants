@@ -15,6 +15,7 @@ const CARD_WIDTH = (width - 60) / 2;
 
 export default function StageCard({ item }: { item: IStage }) {
   const router = useRouter();
+
   return (
     <TouchableOpacity
       style={[styles.card, { borderTopColor: item.color }]}
