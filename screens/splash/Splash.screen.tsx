@@ -1,17 +1,18 @@
 import { colors } from "@/styles/globals";
 import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 const { width } = Dimensions.get("window");
 
 export default function Splash() {
   const router = useRouter();
 
-  //   useEffect(() => {
-  //     const timer = setTimeout(() => {
-  //       router.replace("/(auth)/login");
-  //     }, 3000);
-  //     return () => clearTimeout(timer);
-  //   }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.replace("/(auth)/login");
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <View style={styles.container}>
