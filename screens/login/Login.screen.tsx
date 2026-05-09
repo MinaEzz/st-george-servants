@@ -19,6 +19,7 @@ export default function Login() {
   const handleLogin = () => {
     // هنا هنضيف منطق تسجيل الدخول لاحقاً
     console.log("Login Pressed");
+    router.push("/(selection)/stage-select");
     // بعد النجاح نتوجه لصفحة اختيار المرحلة
     // router.push("/(selection)/stage-select");
   };
