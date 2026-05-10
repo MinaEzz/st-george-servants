@@ -1,21 +1,13 @@
 import ScreenHeader from "@/components/stage-select/screen-header/ScreenHeader.component";
 import StagesList from "@/components/stage-select/stages-list/StagesList.component";
-import { colors } from "@/styles/globals";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { globalStyles } from "@/styles/globals";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function StageSelect() {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={globalStyles.container}>
       <ScreenHeader />
       <StagesList />
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-    paddingTop: 20,
-  },
-});

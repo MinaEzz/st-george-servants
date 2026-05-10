@@ -1,3 +1,5 @@
+import { StyleSheet } from "react-native";
+
 export const colors = {
   background: "#F2EFE9",
   primary: {
@@ -53,3 +55,16 @@ export const colors = {
     950: "#0a0a0a",
   },
 };
+
+export const globalStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+    paddingTop: 20,
+    paddingHorizontal: 24,
+  },
+  header: {
+    paddingVertical: 30,
+    alignItems: "flex-end",
+  },
+});

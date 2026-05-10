@@ -1,5 +1,5 @@
-import { FlatList, StyleSheet } from "react-native";
 import { STAGES } from "@/constants/stages";
+import { FlatList, StyleSheet } from "react-native";
 import StageCard from "./stage-card/StageCard.component";
 
 export default function StagesList() {
@@ -18,7 +18,6 @@ export default function StagesList() {
 
 const styles = StyleSheet.create({
   listContainer: {
-    paddingHorizontal: 20,
     paddingBottom: 20,
   },
   columnWrapper: {

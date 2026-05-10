@@ -3,7 +3,7 @@ export const STAGES = [
     id: "1",
     name: "ملايكة",
     slug: "angels",
-    icon: "baby-outline",
+    icon: "balloon-outline",
     color: "#FFB74D", // برتقالي هادي
   },
   {

@@ -3,11 +3,13 @@ import ScreenHeader from "@/components/class-select/screen-header/ScreenHeader.c
 import Button from "@/components/UI/button/Button.component";
 import { colors } from "@/styles/globals";
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ClassSelect() {
   const { stageId, stageName } = useLocalSearchParams();
+  const router = useRouter();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -15,7 +17,15 @@ export default function ClassSelect() {
       <ClassesList stageId={stageId as string} />
 
       <View style={styles.footer}>
-        <Button onPress={() => console.log("Add Class")} variant="outline">
+        <Button
+          onPress={() =>
+            router.push({
+              pathname: "/(selection)/add-class",
+              params: { stageId, stageName },
+            })
+          }
+          variant="outline"
+        >
           <Ionicons name="add" size={20} color={colors.primary[600]} />
           <Text style={styles.addBtnText}>إضافة فصل جديد</Text>
         </Button>
