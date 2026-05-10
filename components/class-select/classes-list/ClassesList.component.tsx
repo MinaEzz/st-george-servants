@@ -5,7 +5,6 @@ import ClassCard from "./class-card/ClassCard.component";
 
 export default function ClassesList({ stageId }: { stageId: string }) {
   const router = useRouter();
-
   const filteredClasses = CLASSES.filter((c) => c.stageId === stageId);
 
   return (
@@ -16,7 +15,7 @@ export default function ClassesList({ stageId }: { stageId: string }) {
         <ClassCard
           item={item}
           onPress={() =>
-            router.push({ pathname: "/", params: { classId: item.id } })
+            router.push({ pathname: "/(tabs)", params: { classId: item.id } })
           }
         />
       )}
@@ -28,5 +27,3 @@ export default function ClassesList({ stageId }: { stageId: string }) {
 const styles = StyleSheet.create({
   list: { paddingHorizontal: 24, paddingBottom: 100 },
 });
-
-// onPress={() => router.push({ pathname: "/(main)/home", params: { classId: item.id } })}

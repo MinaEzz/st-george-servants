@@ -1,5 +1,5 @@
 import { View } from "react-native";
 
-export default function AttendanceScreen() {
+export default function StudentsScreen() {
   return <View></View>;
 }
