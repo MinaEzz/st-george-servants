@@ -3,7 +3,13 @@ import { useRouter } from "expo-router";
 import { FlatList, StyleSheet } from "react-native";
 import ClassCard from "./class-card/ClassCard.component";
 
-export default function ClassesList({ stageId }: { stageId: string }) {
+export default function ClassesList({
+  stageId,
+  stageName,
+}: {
+  stageId: string;
+  stageName: string;
+}) {
   const router = useRouter();
   const filteredClasses = CLASSES.filter((c) => c.stageId === stageId);
 
@@ -15,7 +21,10 @@ export default function ClassesList({ stageId }: { stageId: string }) {
         <ClassCard
           item={item}
           onPress={() =>
-            router.push({ pathname: "/(tabs)", params: { classId: item.id } })
+            router.push({
+              pathname: "/(tabs)",
+              params: { className: item.name, stageName },
+            })
           }
         />
       )}

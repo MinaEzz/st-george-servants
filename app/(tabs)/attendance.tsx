@@ -1,5 +1,5 @@
-import { View } from "react-native";
+import Attendance from "@/screens/attendance/Attendance.screen";
 
 export default function AttendanceScreen() {
-  return <View></View>;
+  return <Attendance />;
 }

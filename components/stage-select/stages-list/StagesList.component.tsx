@@ -1,12 +1,25 @@
 import { STAGES } from "@/constants/stages";
+import { useRouter } from "expo-router";
 import { FlatList, StyleSheet } from "react-native";
 import StageCard from "./stage-card/StageCard.component";
 
 export default function StagesList() {
+  const router = useRouter();
+
   return (
     <FlatList
       data={STAGES}
-      renderItem={({ item }) => <StageCard item={item} />}
+      renderItem={({ item }) => (
+        <StageCard
+          item={item}
+          onPress={() => {
+            router.push({
+              pathname: "/(selection)/class-select",
+              params: { stageId: item.id, stageName: item.name },
+            });
+          }}
+        />
+      )}
       keyExtractor={(item) => item.id}
       numColumns={2}
       contentContainerStyle={styles.listContainer}
@@ -24,3 +37,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
 });
+
+// () =>
+// router.push({
+//   pathname: "/(selection)/class-select",
+//   params: { stageId: item.id, stageName: item.name },
+// })

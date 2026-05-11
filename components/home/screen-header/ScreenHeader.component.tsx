@@ -2,7 +2,13 @@ import { colors } from "@/styles/globals";
 import { todayDate } from "@/utils/todayData";
 import { StyleSheet, Text, View } from "react-native";
 
-export default function ScreenHeader() {
+export default function ScreenHeader({
+  stageName,
+  className,
+}: {
+  stageName: string;
+  className: string;
+}) {
   const today = todayDate();
 
   return (
@@ -10,7 +16,7 @@ export default function ScreenHeader() {
       <View>
         <Text style={styles.welcomeText}>أهلاً بك يا خادم</Text>
         <Text style={styles.churchText}>
-          كنيسة الشهيد العظيم مارجرجس - حدائق حلوان
+          مرحلة {stageName} - {className}
         </Text>
         <Text style={styles.dateText}>{today}</Text>
       </View>

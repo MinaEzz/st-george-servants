@@ -1,7 +1,5 @@
-import { IStage } from "@/constants/stages";
 import { colors } from "@/styles/globals";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 import {
   Dimensions,
   StyleSheet,
@@ -9,22 +7,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import IStageCardProps from "./StageCard.types";
 
 const { width } = Dimensions.get("window");
 const CARD_WIDTH = (width - 60) / 2;
 
-export default function StageCard({ item }: { item: IStage }) {
-  const router = useRouter();
-
+export default function StageCard({ item, onPress }: IStageCardProps) {
   return (
     <TouchableOpacity
       style={[styles.card, { borderTopColor: item.color }]}
-      onPress={() =>
-        router.push({
-          pathname: "/(selection)/class-select",
-          params: { stageId: item.id, stageName: item.name },
-        })
-      }
+      onPress={onPress}
       activeOpacity={0.8}
     >
       <View

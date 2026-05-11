@@ -1,8 +1,11 @@
 import { colors } from "@/styles/globals";
+import { useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import ActionItem from "./action-item/ActionItem.component";
 
 export default function QuickActionsSection() {
+  const router = useRouter();
+
   return (
     <View>
       <View style={styles.sectionHeader}>
@@ -13,7 +16,9 @@ export default function QuickActionsSection() {
           title="تسجيل حضور"
           icon="checkmark-done-circle"
           color={colors.primary[900]}
-          onPress={() => {}}
+          onPress={() => {
+            router.push("/(tabs)/attendance");
+          }}
           isPrimary={true}
         />
         <ActionItem

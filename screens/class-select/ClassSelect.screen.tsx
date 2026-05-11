@@ -14,7 +14,10 @@ export default function ClassSelect() {
   return (
     <SafeAreaView style={styles.container}>
       <ScreenHeader stageName={stageName as string} />
-      <ClassesList stageId={stageId as string} />
+      <ClassesList
+        stageId={stageId as string}
+        stageName={stageName as string}
+      />
 
       <View style={styles.footer}>
         <Button
