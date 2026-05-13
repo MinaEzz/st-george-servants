@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     padding: 20,
-    backgroundColor: "rgba(255, 255, 255, 0.95)", // شفافية خفيفة شكلها شيك
+    backgroundColor: "rgba(255, 255, 255, 0.95)",
     borderTopWidth: 1,
     borderTopColor: colors.neutral[100],
   },

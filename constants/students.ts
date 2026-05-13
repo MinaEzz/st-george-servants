@@ -1,4 +1,4 @@
-export const STUDENTS = [
+export const STUDENTS: IStudent[] = [
   {
     id: "1",
     name: "مارك ماجد جورج",
@@ -45,3 +45,19 @@ export const STUDENTS = [
     code: "9101112",
   },
 ];
+
+export interface IStudent {
+  id: string;
+  name: string;
+  gender: "male" | "female";
+  birthDate: string;
+  stageId: string;
+  classId: string;
+  image: string | null;
+  phoneNumber: string;
+  parentPhoneNumber: string;
+  address: string;
+  school: string;
+  notes: string[];
+  code: string;
+}

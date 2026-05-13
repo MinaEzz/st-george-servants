@@ -1,5 +1,7 @@
 import { colors } from "@/styles/globals";
+import { getStudentImage } from "@/utils/getStudentImage";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function AttendanceCard({
@@ -7,26 +9,21 @@ export default function AttendanceCard({
   currentStatus,
   onStatusChange,
 }: any) {
+  const router = useRouter();
   const isPresent = currentStatus === "present";
   const isAbsent = currentStatus === "absent";
   const isExcused = currentStatus === "excused";
-
-  const getStudentImage = () => {
-    // 1. لو فيه صورة حقيقية (URI)
-    if (student.image && student.image.trim() !== "") {
-      return { uri: student.image };
-    }
-    // 2. لو مفيش صورة، بنختار الـ placeholder بناءً على النوع
-    return student.gender === "male"
-      ? require("@/assets/images/male-image-placeholder.png") // اتأكد من المسار عندك
-      : require("@/assets/images/female-image-placeholder.png");
-  };
+  const studentImage = getStudentImage(student.image, student.gender);
 
   return (
     <View style={styles.card}>
-      {/* سكشن البيانات والصورة */}
       <View style={styles.topSection}>
-        <TouchableOpacity style={styles.infoIcon}>
+        <TouchableOpacity
+          style={styles.infoIcon}
+          onPress={() => {
+            router.push(`/students/${student.id}`);
+          }}
+        >
           <Ionicons
             name="information-circle-outline"
             size={24}
@@ -40,15 +37,13 @@ export default function AttendanceCard({
         </View>
 
         <Image
-          source={getStudentImage()}
+          source={studentImage}
           style={styles.studentImage}
           resizeMode="cover"
         />
       </View>
 
-      {/* سكشن أزرار الحضور */}
       <View style={styles.actionsContainer}>
-        {/* زرار اعتذر */}
         <TouchableOpacity
           style={[styles.actionBtn, isExcused && styles.excusedActive]}
           onPress={() => onStatusChange(student.id, "excused")}
@@ -63,7 +58,6 @@ export default function AttendanceCard({
           </Text>
         </TouchableOpacity>
 
-        {/* زرار غائب */}
         <TouchableOpacity
           style={[styles.actionBtn, isAbsent && styles.absentActive]}
           onPress={() => onStatusChange(student.id, "absent")}
@@ -78,7 +72,6 @@ export default function AttendanceCard({
           </Text>
         </TouchableOpacity>
 
-        {/* زرار حاضر */}
         <TouchableOpacity
           style={[styles.actionBtn, isPresent && styles.presentActive]}
           onPress={() => onStatusChange(student.id, "present")}

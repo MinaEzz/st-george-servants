@@ -15,7 +15,6 @@ export default function Button({
   loading = false,
   disabled = false,
   style,
-  textStyle,
 }: IButtonProps) {
   const getContainerStyle = () => {
     const baseStyle: ViewStyle = styles.base;
