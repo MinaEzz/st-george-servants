@@ -1,5 +1,5 @@
-import { View } from "react-native";
+import Students from "@/screens/students/Students.screen";
 
 export default function StudentsScreen() {
-  return <View></View>;
+  return <Students />;
 }

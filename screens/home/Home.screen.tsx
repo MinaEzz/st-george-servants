@@ -28,5 +28,3 @@ export default function Home() {
     </SafeAreaView>
   );
 }
-
-// na2s section bta3 a5r elash3arat w a3yad elmelad

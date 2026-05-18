@@ -1,7 +1,7 @@
 import AttendanceList from "@/components/attendance/attendance-list/AttendanceList.component";
 import SaveAttendanceButton from "@/components/attendance/save-attendance-button/SaveAttendanceButton.component";
 import ScreenHeader from "@/components/attendance/screen-header/ScreenHeader.component";
-import Searchbar from "@/components/attendance/searchbar/Searchbar.component";
+import Searchbar from "@/components/shared/searchbar/Searchbar.component";
 import { STUDENTS } from "@/constants/students";
 import { globalStyles } from "@/styles/globals";
 import { useMemo, useState } from "react";
