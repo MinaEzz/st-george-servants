@@ -1,5 +1,5 @@
-import { colors } from "@/styles/globals";
-import { FlatList, StyleSheet, Text } from "react-native";
+import EmptyList from "@/components/shared/empty-list/EmptyList.component";
+import { FlatList, StyleSheet } from "react-native";
 import AttendanceCard from "./attendance-card/AttendanceCard.component";
 
 export default function AttendanceList({
@@ -20,9 +20,7 @@ export default function AttendanceList({
       )}
       contentContainerStyle={styles.listContent}
       showsVerticalScrollIndicator={false}
-      ListEmptyComponent={
-        <Text style={styles.emptyText}>لا يوجد مخدوم بهذا الاسم..</Text>
-      }
+      ListEmptyComponent={<EmptyList text="لا يوجد مخدوم بهذا الإسم..." />}
     />
   );
 }
@@ -30,11 +28,5 @@ export default function AttendanceList({
 const styles = StyleSheet.create({
   listContent: {
     paddingBottom: 120,
-  },
-  emptyText: {
-    textAlign: "center",
-    fontFamily: "Tajawal",
-    color: colors.neutral[400],
-    marginTop: 50,
   },
 });

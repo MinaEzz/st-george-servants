@@ -1,6 +1,7 @@
 import { colors } from "@/styles/globals";
 import { getStudentImage } from "@/utils/getStudentImage";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import {
   Image,
   Linking,
@@ -11,6 +12,7 @@ import {
 } from "react-native";
 
 export default function StudentCard({ student }: { student: any }) {
+  const router = useRouter();
   const studentImage = getStudentImage(student.image, student.gender);
 
   const makeCall = (phone: string) => Linking.openURL(`tel:${phone}`);
@@ -20,7 +22,7 @@ export default function StudentCard({ student }: { student: any }) {
   return (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => {}}
+      onPress={() => router.push(`/students/${student.id}`)}
       activeOpacity={0.9}
     >
       <View style={styles.topInfo}>

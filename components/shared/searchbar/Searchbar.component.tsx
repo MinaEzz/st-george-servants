@@ -5,15 +5,17 @@ import { StyleSheet, TextInput, View } from "react-native";
 export default function Searchbar({
   value,
   onChange,
+  placeholder = "ابحث هنا...",
 }: {
   value: string;
   onChange: (text: string) => void;
+  placeholder?: string;
 }) {
   return (
     <View style={styles.searchContainer}>
       <View style={styles.searchBar}>
         <TextInput
-          placeholder="ابحث عن مخدوم بالاسم أو الكود..."
+          placeholder={placeholder}
           style={styles.searchInput}
           value={value}
           onChangeText={onChange}

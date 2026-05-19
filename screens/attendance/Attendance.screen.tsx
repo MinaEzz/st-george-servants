@@ -53,7 +53,11 @@ export default function Attendance() {
         className="الفصل الثاني"
         stageName="ابتدائي"
       />
-      <Searchbar value={searchQuery} onChange={setSearchQuery} />
+      <Searchbar
+        value={searchQuery}
+        onChange={setSearchQuery}
+        placeholder="ابحث عن مخدوم بالاسم أو الكود..."
+      />
       <AttendanceList
         students={filteredStudents}
         attendanceData={attendanceData}

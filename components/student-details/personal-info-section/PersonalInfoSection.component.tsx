@@ -1,7 +1,8 @@
+import SectionHeader from "@/components/shared/section-header/SectionHeader.component";
 import { IStudent } from "@/constants/students";
 import { colors } from "@/styles/globals";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import InfoRow from "./info-row/InfoRow.component";
 
 export default function PersonalInfoSection({
@@ -11,16 +12,10 @@ export default function PersonalInfoSection({
 }) {
   return (
     <View style={styles.container}>
-      <View style={styles.sectionHeader}>
-        <View style={styles.titleContainer}>
-          <FontAwesome5
-            name={"address-card"}
-            size={24}
-            color={colors.primary[900]}
-          />
-          <Text style={styles.sectionTitle}>بيانات المخدوم</Text>
-        </View>
-      </View>
+      <SectionHeader
+        title="بيانات المخدوم"
+        icon={<FontAwesome5 name={"address-card"} />}
+      />
       <View style={styles.card}>
         <InfoRow
           icon="call-outline"
@@ -42,23 +37,6 @@ export default function PersonalInfoSection({
 
 const styles = StyleSheet.create({
   container: { marginBottom: 20 },
-  sectionHeader: {
-    flexDirection: "row-reverse",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 15,
-  },
-  titleContainer: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    gap: 5,
-  },
-  sectionTitle: {
-    fontFamily: "Tajawal",
-    fontSize: 18,
-    fontWeight: "bold",
-    color: colors.primary[900],
-  },
   card: {
     backgroundColor: "#fff",
     borderRadius: 24,
