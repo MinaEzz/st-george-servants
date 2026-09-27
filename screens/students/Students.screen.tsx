@@ -4,40 +4,81 @@ import FiltersList from "@/components/students/filters-list/FiltersList.componen
 import ScreenHeader from "@/components/students/screen-header/ScreenHeader.component";
 import StatsSection from "@/components/students/stats-section/StatsSection.component";
 import StudentsList from "@/components/students/students-list/StudentsList.component";
-import { STUDENTS } from "@/constants/students";
+import { ATTENDANCE_HISTORY, STUDENTS } from "@/constants/students";
 import { globalStyles } from "@/styles/globals";
-import { useMemo, useState } from "react";
+import { checkNeedsFollowUp } from "@/utils/checkNeedsFollowUp";
+import { useLocalSearchParams } from "expo-router";
+import { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 
 export default function Students() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState("all");
+  const { filter } = useLocalSearchParams<{ filter?: string }>();
+  const [activeFilter, setActiveFilter] = useState(filter || "all");
+
+  useEffect(() => {
+    if (filter) {
+      setActiveFilter(filter);
+    } else {
+      setActiveFilter("all");
+    }
+  }, [filter]);
 
   const filteredStudents = useMemo(() => {
     const query = searchQuery.trim();
-    if (!query) return STUDENTS;
-    return STUDENTS.filter(
-      (s) => s.name.includes(query) || s.code.includes(query),
-    );
-  }, [searchQuery]);
+    return STUDENTS.filter((student) => {
+      const matchesSearch = query
+        ? student.name.includes(query) || student.code.includes(query)
+        : true;
+      if (!matchesSearch) return false;
 
-  // const stats = useMemo(() => {
-  //   const total = STUDENTS.length;
-  //   // حساب المخدومين الحاضرين اليوم ديناميكياً
-  //   const presentToday = STUDENTS.filter((s) => s.attendanceStatus === "present").length;
-  //   // حساب النسبة المئوية للحضور
-  //   const attendancePercentage = total > 0 ? Math.round((presentToday / total) * 100) : 0;
+      if (activeFilter === "all") return true;
 
-  //   return {
-  //     total,
-  //     attendancePercentage,
-  //   };
-  // }, []);
+      const todayStatus = ATTENDANCE_HISTORY[student.id]?.[0];
+      if (activeFilter === "present") return todayStatus === "present";
+      if (activeFilter === "absent") return todayStatus === "absent";
+
+      if (activeFilter === "follow-up") {
+        const isAutoFollowUp = checkNeedsFollowUp(
+          student.id,
+          ATTENDANCE_HISTORY,
+          4,
+        );
+
+        return isAutoFollowUp;
+      }
+
+      return true;
+    });
+  }, [searchQuery, activeFilter]);
+
+  const stats = useMemo(() => {
+    const total = STUDENTS.length;
+
+    if (total === 0) {
+      return { total: 0, attendancePercentage: 0 };
+    }
+
+    const presentCount = STUDENTS.filter((student) => {
+      const todayStatus = ATTENDANCE_HISTORY[student.id]?.[0];
+      return todayStatus === "present";
+    }).length;
+
+    const attendancePercentage = Math.round((presentCount / total) * 100);
+
+    return {
+      total,
+      attendancePercentage,
+    };
+  }, []);
 
   return (
     <View style={[globalStyles.container, { position: "relative" }]}>
       <ScreenHeader className="الفصل الثاني" stageName="ابتدائي" />
-      <StatsSection total={STUDENTS.length} attendancePercentage={10} />
+      <StatsSection
+        total={stats.total}
+        attendancePercentage={stats.attendancePercentage}
+      />
       <Searchbar
         value={searchQuery}
         onChange={setSearchQuery}

@@ -61,3 +61,18 @@ export interface IStudent {
   notes: string[];
   code: string;
 }
+
+export const TODAY_ATTENDANCE: Record<string, "present" | "absent"> = {
+  "1": "present",
+  "2": "absent",
+  "3": "present",
+};
+
+export const ATTENDANCE_HISTORY: Record<
+  string,
+  ("present" | "absent" | "excused")[]
+> = {
+  "1": ["absent", "absent", "absent", "absent"],
+  "2": ["present", "absent", "present", "absent"],
+  "3": ["absent", "absent", "absent", "present"],
+};

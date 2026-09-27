@@ -1,3 +1,4 @@
+import { Href } from "expo-router";
 import { ViewStyle } from "react-native";
 
 export default interface IStatCardProps {
@@ -6,4 +7,5 @@ export default interface IStatCardProps {
   backgroundColor: string;
   numberColor?: string;
   style?: ViewStyle;
+  href?: Href;
 }
