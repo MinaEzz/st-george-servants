@@ -1,6 +1,6 @@
 import { colors } from "@/styles/globals";
 import { todayDate } from "@/utils/todayData";
-import { StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 
 export default function ScreenHeader({
   stageName,
@@ -20,6 +20,11 @@ export default function ScreenHeader({
         </Text>
         <Text style={styles.dateText}>{today}</Text>
       </View>
+      <Image
+        style={styles.logo}
+        source={require("../../../assets/images/logo.png")}
+        resizeMode="contain"
+      />
     </View>
   );
 }
@@ -51,5 +56,9 @@ const styles = StyleSheet.create({
     color: colors.primary[600],
     textAlign: "right",
     marginTop: 5,
+  },
+  logo: {
+    width: 76,
+    height: 76,
   },
 });

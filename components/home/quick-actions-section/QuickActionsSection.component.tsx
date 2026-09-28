@@ -24,7 +24,9 @@ export default function QuickActionsSection() {
           title="إضافة مخدوم"
           icon="person-add-outline"
           color={colors.primary[900]}
-          onPress={() => {}}
+          onPress={() => {
+            router.push("/students/add-student");
+          }}
         />
         <ActionItem
           title="إضافة خادم"

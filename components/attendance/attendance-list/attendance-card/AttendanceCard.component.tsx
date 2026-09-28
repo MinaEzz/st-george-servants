@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     borderRightWidth: 4,
-    borderRightColor: "#D4AF37", // الخط الذهبي اللي في الصورة
+    borderRightColor: colors.secondary[400],
   },
   topSection: {
     flexDirection: "row",
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: colors.neutral[600],
   },
-  // ألوان الحالات النشطة
+
   presentActive: { backgroundColor: "#E8F5E9" },
   absentActive: { backgroundColor: "#FFEBEE" },
   excusedActive: { backgroundColor: "#FFF3E0" },

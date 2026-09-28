@@ -67,4 +67,36 @@ export const globalStyles = StyleSheet.create({
     paddingVertical: 30,
     alignItems: "flex-end",
   },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 20,
+  },
+  inputGroup: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+  },
+  label: {
+    textAlign: "right",
+    fontSize: 14,
+    fontFamily: "Tajawal",
+    color: colors.neutral[600],
+    fontWeight: "600",
+  },
+  input: {
+    backgroundColor: "#FFF",
+    borderWidth: 1,
+    borderColor: colors.neutral[200],
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontFamily: "Tajawal",
+    fontSize: 14,
+    color: colors.neutral[600],
+    textAlign: "right",
+  },
+  textArea: {
+    minHeight: 100,
+  },
 });

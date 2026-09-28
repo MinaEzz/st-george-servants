@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 16,
     borderRightWidth: 5,
-    borderColor: colors.secondary[400], // حافة البراند الصفراء/الذهبية المريحة للعين بتاعتك
+    borderColor: colors.secondary[400],
     elevation: 2,
     shadowColor: "#000",
     shadowOpacity: 0.04,
