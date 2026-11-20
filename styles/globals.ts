@@ -56,6 +56,31 @@ export const colors = {
   },
 };
 
+/** ألوان حالات الحضور (كانت متكررة hardcoded في كذا ملف) */
+export const statusColors = {
+  present: { background: "#E8F5E9", text: "#2E7D32", icon: "#388E3C" },
+  absent: { background: "#FFEBEE", text: "#C62828", icon: "#D32F2F" },
+  excused: { background: "#FFF3E0", text: "#F57C00", icon: "#F57C00" },
+} as const;
+
+export const spacing = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 20,
+  xxl: 24,
+  section: 30,
+} as const;
+
+export const radius = {
+  input: 10,
+  button: 12,
+  card: 24,
+  cardSmall: 20,
+  pill: 999,
+} as const;
+
 export const globalStyles = StyleSheet.create({
   container: {
     flex: 1,
@@ -98,5 +123,22 @@ export const globalStyles = StyleSheet.create({
   },
   textArea: {
     minHeight: 100,
+  },
+  /** الكارت الأساسي: أبيض + حواف ناعمة + الشريط الذهبي الجانبي */
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 24,
+    padding: 20,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    borderRightWidth: 5,
+    borderRightColor: colors.secondary[400],
+  },
+  /** مسافة الأقسام الرأسية داخل الشاشات (add-student مثلاً) */
+  section: {
+    marginVertical: 20,
   },
 });

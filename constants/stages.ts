@@ -1,4 +1,8 @@
-export const STAGES = [
+import type { IStage } from "@/types/class.types";
+
+export type { IStage } from "@/types/class.types";
+
+export const STAGES: IStage[] = [
   {
     id: "1",
     name: "ملايكة",
@@ -35,11 +39,3 @@ export const STAGES = [
     color: "#4DB6AC", // تركواز وقور
   },
 ];
-
-export interface IStage {
-  id: string;
-  name: string;
-  slug: string;
-  icon: string;
-  color: string;
-}

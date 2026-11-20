@@ -1,3 +1,5 @@
+import { DataProvider } from "@/store/data.store";
+import { SessionProvider } from "@/store/session.store";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -19,8 +21,15 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="index" />
-    </Stack>
+    <SessionProvider>
+      <DataProvider>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(selection)" />
+          <Stack.Screen name="(tabs)" />
+        </Stack>
+      </DataProvider>
+    </SessionProvider>
   );
 }

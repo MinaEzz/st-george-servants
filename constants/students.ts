@@ -1,78 +1,41 @@
-export const STUDENTS: IStudent[] = [
-  {
-    id: "1",
-    name: "مارك ماجد جورج",
-    gender: "male",
-    birthDate: "2019-01-01",
-    stageId: "1",
-    classId: "101",
-    image: null,
-    phoneNumber: "01212121212",
-    parentPhoneNumber: "01214151617",
-    address: "14 شارع توتونجي - حدائق حلوان",
-    school: "مدرسة الزهراء بنين",
-    notes: [],
-    code: "1234",
-  },
-  {
-    id: "2",
-    name: "مينا ممدوح ابراهيم",
-    gender: "male",
-    birthDate: "2020-01-02",
-    stageId: "1",
-    classId: "101",
-    image: null,
-    phoneNumber: "01212121212",
-    parentPhoneNumber: "01214151617",
-    address: "منشية حدائق حلوان",
-    school: "مدرسة الزهراء بنين",
-    notes: [],
-    code: "5678",
-  },
-  {
-    id: "3",
-    name: "نورا جرجس عاطف",
-    gender: "female",
-    birthDate: "2019-01-01",
-    stageId: "1",
-    classId: "101",
-    image: null,
-    phoneNumber: "01212121212",
-    parentPhoneNumber: "01214151617",
-    address: "14 شارع توتونجي - حدائق حلوان",
-    school: "مدرسة الزهراء بنات",
-    notes: [],
-    code: "9101112",
-  },
-];
+import {
+  MOCK_ATTENDANCE_RECORDS,
+  MOCK_STUDENTS,
+} from "@/services/mock/mockData";
+import type { AttendanceStatus } from "@/types/common.types";
+import {
+  getRecordedDatesByClass,
+  groupStatusByStudent,
+} from "@/utils/attendanceStats";
 
-export interface IStudent {
-  id: string;
-  name: string;
-  gender: "male" | "female";
-  birthDate: string;
-  stageId: string;
-  classId: string;
-  image: string | null;
-  phoneNumber: string;
-  parentPhoneNumber: string;
-  address: string;
-  school: string;
-  notes: string[];
-  code: string;
+export type { IStudent } from "@/types/student.types";
+
+/**
+ * @deprecated طبقة توافق مؤقتة عشان الشاشات القديمة تفضل شغالة.
+ * الشاشات هتنتقل تدريجياً لـ `useStudents()` و `useAttendance()` و `useFollowUp()`،
+ * وبعد نقل آخر شاشة الملف ده هيتحذف.
+ */
+export const STUDENTS = MOCK_STUDENTS;
+
+function buildLegacyHistory(): Record<string, AttendanceStatus[]> {
+  const datesByClass = getRecordedDatesByClass(MOCK_ATTENDANCE_RECORDS);
+  const statusByStudent = groupStatusByStudent(MOCK_ATTENDANCE_RECORDS);
+  const history: Record<string, AttendanceStatus[]> = {};
+
+  MOCK_STUDENTS.forEach((student) => {
+    const dates = datesByClass[student.classId] ?? [];
+    const statusByDate = statusByStudent[student.id] ?? {};
+
+    history[student.id] = dates
+      .map((date) => statusByDate[date])
+      .filter((status): status is AttendanceStatus => status !== undefined);
+  });
+
+  return history;
 }
 
-export const TODAY_ATTENDANCE: Record<string, "present" | "absent"> = {
-  "1": "present",
-  "2": "absent",
-  "3": "present",
-};
-
-export const ATTENDANCE_HISTORY: Record<
-  string,
-  ("present" | "absent" | "excused")[]
-> = {
-  "1": ["absent", "absent", "absent", "absent"],
-  "2": ["present", "absent", "present", "absent"],
-  "3": ["absent", "absent", "absent", "present"],
-};
+/**
+ * @deprecated الأحدث أولاً: العنصر الأول = آخر يوم خدمة مسجل لفصل المخدوم.
+ */
+export const ATTENDANCE_HISTORY: Record<string, AttendanceStatus[]> =
+  buildLegacyHistory();

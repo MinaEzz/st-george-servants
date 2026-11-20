@@ -1,4 +1,13 @@
-export const CLASSES = [
+import type { IClassWithCount } from "@/types/class.types";
+
+/**
+ * @deprecated الأعداد هنا ثابتة وغير حقيقية. الشاشات هتنتقل تدريجياً لـ
+ * `useClasses()` اللي بتحسب studentsCount من المخدومين الفعليين،
+ * وبعد كده الملف ده هيتحذف ويفضل الـ seed بس في services/mock.
+ */
+export type IClass = IClassWithCount;
+
+export const CLASSES: IClassWithCount[] = [
   // --- ملايكة (stageId: "1") ---
   { id: "101", stageId: "1", name: "حضانة صغرى", studentsCount: 15 },
   { id: "102", stageId: "1", name: "حضانة كبرى", studentsCount: 12 },
@@ -25,10 +34,3 @@ export const CLASSES = [
   { id: "501", stageId: "5", name: "دفعة 2025", studentsCount: 23 },
   { id: "502", stageId: "5", name: "دفعة 2024 وما قبلها", studentsCount: 85 },
 ];
-
-export interface IClass {
-  id: string;
-  stageId: string;
-  name: string;
-  studentsCount: number;
-}
