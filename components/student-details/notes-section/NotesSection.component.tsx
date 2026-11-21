@@ -1,25 +1,56 @@
 import SectionHeader from "@/components/shared/section-header/SectionHeader.component";
-import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, View } from "react-native";
+import { colors, globalStyles } from "@/styles/globals";
+import { formatRelativeArabic } from "@/utils/dates";
+import { StyleSheet, Text, View } from "react-native";
 import NoteCard from "./note-card/NoteCard.component";
+import { INotesSectionProps } from "./NotesSection.types";
 
-export default function NotesSection({ studentId }: { studentId: string }) {
+/** بيتستخدم مرتين في تفاصيل المخدوم: ملاحظات الخدام وسجل الافتقاد */
+export default function NotesSection({
+  title,
+  icon,
+  notes,
+  emptyText,
+  onEdit,
+  onDelete,
+}: INotesSectionProps) {
   return (
     <View style={styles.container}>
-      <SectionHeader
-        title="ملاحظات الخدام"
-        icon={<Ionicons name="chatbubbles-outline" />}
-        viewAllHref="/"
-      />
-      <NoteCard
-        servantName="ا. عماد فوزي"
-        timeText="منذ يومين"
-        noteBody="الطالب يحتاج للاهتمام بدرس المحفوظات القادم. تم التواصل مع ولي الأمر بخصوص نشاط الجمعة."
-      />
+      <SectionHeader title={title} icon={icon} />
+
+      {notes.length === 0 ? (
+        <View style={globalStyles.card}>
+          <Text style={styles.emptyText}>{emptyText}</Text>
+        </View>
+      ) : (
+        notes.map((note) => {
+          const wasEdited = note.updatedAt !== note.createdAt;
+          const timeText = `${formatRelativeArabic(note.createdAt)}${wasEdited ? " (معدّلة)" : ""}`;
+
+          return (
+            <NoteCard
+              key={note.id}
+              servantName={note.authorName}
+              timeText={timeText}
+              noteBody={note.body}
+              kind={note.kind}
+              contactMethod={note.contactMethod}
+              onEdit={() => onEdit(note)}
+              onDelete={() => onDelete(note)}
+            />
+          );
+        })
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { marginBottom: 20 },
+  emptyText: {
+    textAlign: "center",
+    fontFamily: "Tajawal",
+    fontSize: 14,
+    color: colors.neutral[500],
+  },
 });

@@ -3,7 +3,11 @@ import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function ScreenHeader() {
+export default function ScreenHeader({
+  title = "إضافة مخدوم جديد",
+}: {
+  title?: string;
+}) {
   const router = useRouter();
 
   return (
@@ -12,7 +16,7 @@ export default function ScreenHeader() {
         <TouchableOpacity onPress={() => router.back()}>
           <Feather name="arrow-right" size={24} style={styles.backArrow} />
         </TouchableOpacity>
-        <Text style={styles.title}>إضافة مخدوم جديد</Text>
+        <Text style={styles.title}>{title}</Text>
       </View>
       <Image
         style={styles.logo}

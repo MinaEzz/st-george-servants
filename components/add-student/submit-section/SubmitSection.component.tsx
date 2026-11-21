@@ -7,6 +7,7 @@ import { ISubmitSectionProps } from "./SubmitSection.types";
 export default function SubmitSection({
   onSubmit,
   onCancel,
+  submitLabel = "حفظ المخدوم",
   isSubmitting,
   errorMessage,
   invalidCount,
@@ -39,7 +40,7 @@ export default function SubmitSection({
         style={{ backgroundColor: colors.primary[900] }}
       >
         <Ionicons name="checkmark-circle-outline" size={22} color="#FFF" />
-        <Text style={styles.submitText}>حفظ المخدوم</Text>
+        <Text style={styles.submitText}>{submitLabel}</Text>
       </Button>
 
       <Button variant="ghost" onPress={onCancel} disabled={isSubmitting}>

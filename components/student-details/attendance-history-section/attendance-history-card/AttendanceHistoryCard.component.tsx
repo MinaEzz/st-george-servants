@@ -1,17 +1,35 @@
-import { colors } from "@/styles/globals";
+import { colors, statusColors } from "@/styles/globals";
 import { StyleSheet, Text, View } from "react-native";
 import IAttendanceHistoryCardProps from "./AttendanceHistoryCard.types";
+
+const STATUS_CONFIG = {
+  present: {
+    label: "حاضر",
+    color: statusColors.present.icon,
+    bg: statusColors.present.background,
+  },
+  absent: {
+    label: "غائب",
+    color: statusColors.absent.icon,
+    bg: statusColors.absent.background,
+  },
+  excused: {
+    label: "معتذر",
+    color: statusColors.excused.icon,
+    bg: statusColors.excused.background,
+  },
+  none: {
+    label: "لم يُسجّل",
+    color: colors.neutral[400],
+    bg: colors.neutral[100],
+  },
+};
 
 export default function AttendanceHistoryCard({
   date,
   status,
 }: IAttendanceHistoryCardProps) {
-  const statusConfig = {
-    present: { label: "حاضر", color: "#4CAF50", bg: "#E8F5E9" },
-    absent: { label: "غائب", color: "#F44336", bg: "#FFEBEE" },
-    excused: { label: "معتذر", color: "#FF9800", bg: "#FFF3E0" },
-  };
-  const config = statusConfig[status];
+  const config = STATUS_CONFIG[status ?? "none"];
 
   return (
     <View style={[styles.card, { borderColor: config.color }]}>
@@ -27,12 +45,11 @@ export default function AttendanceHistoryCard({
 
 const styles = StyleSheet.create({
   card: {
+    flex: 1,
     backgroundColor: "#fff",
     borderRadius: 8,
     padding: 12,
-    width: 100,
     alignItems: "center",
-    marginLeft: 12,
     borderTopWidth: 4,
   },
   dateText: {

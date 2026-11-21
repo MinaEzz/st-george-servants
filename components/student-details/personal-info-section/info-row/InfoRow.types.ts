@@ -1,5 +1,7 @@
+import type { IoniconName } from "@/constants/service";
+
 export default interface IInfoRowProps {
-  icon: string;
+  icon: IoniconName;
   label: string;
   value: string;
 }

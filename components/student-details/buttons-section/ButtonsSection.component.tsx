@@ -2,26 +2,22 @@ import Button from "@/components/UI/button/Button.component";
 import { colors } from "@/styles/globals";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
+import { IButtonsSectionProps } from "./ButtonsSection.types";
 
-export default function ButtonsSection() {
+export default function ButtonsSection({
+  onAddNote,
+  onEditStudent,
+}: IButtonsSectionProps) {
   return (
     <View style={styles.buttonGroup}>
-      <Button
-        variant="fill"
-        onPress={() => console.log("Add Note Modal")}
-        style={styles.addNoteBtn}
-      >
+      <Button variant="fill" onPress={onAddNote} style={styles.addNoteBtn}>
         <View style={styles.btnContent}>
           <Ionicons name="add-circle-outline" size={20} color="#fff" />
           <Text style={styles.addNoteText}>إضافة ملاحظة</Text>
         </View>
       </Button>
 
-      <Button
-        variant="outline"
-        onPress={() => console.log("Edit Student")}
-        style={styles.editBtn}
-      >
+      <Button variant="outline" onPress={onEditStudent} style={styles.editBtn}>
         <View style={styles.btnContent}>
           <Ionicons
             name="create-outline"

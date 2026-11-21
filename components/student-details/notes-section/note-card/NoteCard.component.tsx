@@ -1,4 +1,5 @@
-import { colors } from "@/styles/globals";
+import { CONTACT_METHOD_ICONS, CONTACT_METHOD_LABELS } from "@/constants/service";
+import { colors, statusColors } from "@/styles/globals";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import INoteCardProps from "./NoteCard.types";
@@ -7,25 +8,34 @@ export default function NoteCard({
   servantName,
   timeText,
   noteBody,
+  kind,
+  contactMethod,
+  onEdit,
+  onDelete,
 }: INoteCardProps) {
+  const isFollowUp = kind === "follow-up";
+
   return (
-    <View style={styles.noteCard}>
+    <View
+      style={[
+        styles.noteCard,
+        { borderColor: isFollowUp ? colors.secondary[500] : colors.primary[900] },
+      ]}
+    >
       <View style={styles.noteHeader}>
         <View style={styles.servantInfo}>
           <Text style={styles.servantName}>خادم الفصل: {servantName}</Text>
           <Text style={styles.timeText}>{timeText}</Text>
         </View>
         <View style={styles.actionButtons}>
-          <TouchableOpacity
-            onPress={() => console.log("Delete Note")}
-            style={styles.iconBtn}
-          >
-            <Ionicons name="trash-outline" size={18} color="#F44336" />
+          <TouchableOpacity onPress={onDelete} style={styles.iconBtn}>
+            <Ionicons
+              name="trash-outline"
+              size={18}
+              color={statusColors.absent.icon}
+            />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => console.log("Edit Note")}
-            style={styles.iconBtn}
-          >
+          <TouchableOpacity onPress={onEdit} style={styles.iconBtn}>
             <Ionicons
               name="create-outline"
               size={18}
@@ -34,6 +44,19 @@ export default function NoteCard({
           </TouchableOpacity>
         </View>
       </View>
+
+      {isFollowUp && contactMethod ? (
+        <View style={styles.methodChip}>
+          <Ionicons
+            name={CONTACT_METHOD_ICONS[contactMethod]}
+            size={14}
+            color={colors.secondary[800]}
+          />
+          <Text style={styles.methodText}>
+            {CONTACT_METHOD_LABELS[contactMethod]}
+          </Text>
+        </View>
+      ) : null}
 
       <Text style={styles.noteBody}>{noteBody}</Text>
     </View>
@@ -46,7 +69,6 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     padding: 15,
     borderRightWidth: 5,
-    borderColor: colors.primary[900],
     marginBottom: 10,
   },
   noteHeader: {
@@ -81,6 +103,23 @@ const styles = StyleSheet.create({
     color: colors.primary[800],
   },
   timeText: { fontFamily: "Tajawal", fontSize: 12, color: colors.neutral[400] },
+  methodChip: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    alignSelf: "flex-end",
+    gap: 6,
+    backgroundColor: colors.secondary[100],
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    marginBottom: 8,
+  },
+  methodText: {
+    fontFamily: "Tajawal",
+    fontSize: 12,
+    fontWeight: "bold",
+    color: colors.secondary[800],
+  },
   noteBody: {
     fontFamily: "Tajawal",
     fontSize: 14,

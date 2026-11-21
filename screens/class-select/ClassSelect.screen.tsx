@@ -10,6 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function ClassSelect() {
   const { stageId, stageName } = useLocalSearchParams();
   const router = useRouter();
+  console.log("Select Class for: ", stageId, stageName);
 
   return (
     <SafeAreaView style={styles.container}>

@@ -11,7 +11,7 @@ export default function InfoRow({ icon, label, value }: IInfoRowProps) {
         <Text style={styles.value}>{value}</Text>
       </View>
       <Ionicons
-        name={icon as any}
+        name={icon}
         size={20}
         color={colors.primary[600]}
         style={styles.icon}
@@ -29,11 +29,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "600",
     color: "#333",
+    textAlign: "right",
   },
   icon: { backgroundColor: colors.primary[50], padding: 8, borderRadius: 10 },
-  divider: {
-    height: 1,
-    backgroundColor: colors.neutral[100],
-    marginVertical: 5,
-  },
 });

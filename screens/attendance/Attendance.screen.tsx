@@ -11,13 +11,15 @@ import { useSession } from "@/store/session.store";
 import { colors, globalStyles } from "@/styles/globals";
 import { toArabicDigits } from "@/utils/arabic";
 import { useMemo, useState } from "react";
-import { ActivityIndicator, Alert, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Alert, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Attendance() {
   const { scope } = useSession();
   const sheet = useAttendanceSheet(scope.classId);
   const [searchQuery, setSearchQuery] = useState("");
+
+  console.log("Attendance For: ", scope, sheet);
 
   const filteredStudents = useMemo(() => {
     const query = searchQuery.trim();

@@ -7,6 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AddClass() {
   const { stageId, stageName } = useLocalSearchParams();
+  console.log("Add Class for:", stageId, stageName);
 
   return (
     <SafeAreaView style={globalStyles.container}>

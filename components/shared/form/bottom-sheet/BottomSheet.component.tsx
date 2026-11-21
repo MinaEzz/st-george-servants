@@ -1,6 +1,15 @@
 import { colors } from "@/styles/globals";
 import { Ionicons } from "@expo/vector-icons";
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IBottomSheetProps } from "./BottomSheet.types";
 
@@ -22,7 +31,10 @@ export default function BottomSheet({
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      <View style={styles.overlay}>
+      <KeyboardAvoidingView
+        style={styles.overlay}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <Pressable style={styles.backdrop} onPress={onClose} />
 
         <View style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}>
@@ -49,7 +61,7 @@ export default function BottomSheet({
 
           {footer}
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

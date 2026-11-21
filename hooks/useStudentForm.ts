@@ -16,8 +16,13 @@ import { useCallback, useMemo, useState } from "react";
 
 export interface ISubmitStudentResult {
   student: IStudent;
-  /** false لو المخدوم اتحفظ لكن حفظ الملاحظة فشل */
+  /** false لو المخدوم اتحفظ لكن حفظ الملاحظة فشل (في الإضافة بس) */
   noteSaved: boolean;
+}
+
+export interface IUseStudentFormOptions {
+  /** لو اتبعت، الفورم بيشتغل في وضع التعديل على المخدوم ده */
+  student?: IStudent | null;
 }
 
 export function createInitialStudentValues(
@@ -37,17 +42,42 @@ export function createInitialStudentValues(
   };
 }
 
-export function useStudentForm() {
-  const { addStudent, addNote } = useDataStore();
+export function studentToFormValues(student: IStudent): IStudentFormValues {
+  return {
+    name: student.name,
+    gender: student.gender,
+    birthDate: student.birthDate,
+    stageId: student.stageId,
+    classId: student.classId,
+    phoneNumber: student.phoneNumber,
+    parentPhoneNumber: student.parentPhoneNumber,
+    address: student.address,
+    school: student.school,
+    notes: "",
+  };
+}
+
+export function useStudentForm({ student = null }: IUseStudentFormOptions = {}) {
+  const { addStudent, updateStudent, addNote } = useDataStore();
   const { scope, getAuthor } = useSession();
   const { stages, getClassesByStage } = useClasses();
 
-  const [values, setValues] = useState<IStudentFormValues>(() =>
-    createInitialStudentValues(scope),
+  const isEditing = student !== null;
+
+  const initialValues = useMemo<IStudentFormValues>(
+    () => (student ? studentToFormValues(student) : createInitialStudentValues(scope)),
+    [student, scope],
   );
+
+  const [values, setValues] = useState<IStudentFormValues>(initialValues);
   const [errors, setErrors] = useState<IStudentFormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const isDirty = useMemo(
+    () => JSON.stringify(values) !== JSON.stringify(initialValues),
+    [values, initialValues],
+  );
 
   const onChange = useCallback<StudentFormChangeHandler>((field, value) => {
     setValues((previous) => {
@@ -100,19 +130,27 @@ export function useStudentForm() {
     setIsSubmitting(true);
     setSubmitError(null);
 
+    const payload = {
+      name: values.name.trim().replace(/\s+/g, " "),
+      gender: values.gender as Gender,
+      birthDate: values.birthDate,
+      stageId: values.stageId,
+      classId: values.classId,
+      phoneNumber: normalizeDigits(values.phoneNumber),
+      parentPhoneNumber: normalizeDigits(values.parentPhoneNumber),
+      address: values.address.trim(),
+      school: values.school.trim(),
+    };
+
     try {
-      const student = await addStudent({
-        name: values.name.trim().replace(/\s+/g, " "),
-        gender: values.gender as Gender,
-        birthDate: values.birthDate,
-        stageId: values.stageId,
-        classId: values.classId,
-        image: null,
-        phoneNumber: normalizeDigits(values.phoneNumber),
-        parentPhoneNumber: normalizeDigits(values.parentPhoneNumber),
-        address: values.address.trim(),
-        school: values.school.trim(),
-      });
+      if (student) {
+        const updated = await updateStudent(student.id, payload);
+        // نزامن الفورم مع القيم المحفوظة فعلاً (بعد التنظيف: أرقام لاتينية، مسافات...)
+        setValues(studentToFormValues(updated));
+        return { student: updated, noteSaved: true };
+      }
+
+      const created = await addStudent({ ...payload, image: null });
 
       let noteSaved = true;
       const noteBody = values.notes.trim();
@@ -121,7 +159,7 @@ export function useStudentForm() {
         const author = getAuthor();
         try {
           await addNote({
-            studentId: student.id,
+            studentId: created.id,
             kind: "general",
             contactMethod: null,
             body: noteBody,
@@ -133,25 +171,27 @@ export function useStudentForm() {
         }
       }
 
-      return { student, noteSaved };
+      return { student: created, noteSaved };
     } catch (caught) {
       setSubmitError(getErrorMessage(caught));
       return null;
     } finally {
       setIsSubmitting(false);
     }
-  }, [values, addStudent, addNote, getAuthor]);
+  }, [values, student, addStudent, updateStudent, addNote, getAuthor]);
 
   const reset = useCallback(() => {
-    setValues(createInitialStudentValues(scope));
+    setValues(initialValues);
     setErrors({});
     setSubmitError(null);
-  }, [scope]);
+  }, [initialValues]);
 
   return {
     values,
     errors,
     invalidCount: Object.keys(errors).length,
+    isEditing,
+    isDirty,
     isSubmitting,
     submitError,
     stageOptions,
@@ -161,3 +201,5 @@ export function useStudentForm() {
     reset,
   };
 }
+
+export type StudentFormState = ReturnType<typeof useStudentForm>;
