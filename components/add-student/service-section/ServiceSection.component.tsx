@@ -1,28 +1,20 @@
 import SectionHeader from "@/components/shared/section-header/SectionHeader.component";
-import { colors } from "@/styles/globals";
+import { globalStyles } from "@/styles/globals";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
+import ServiceForm from "./service-form/ServiceForm.component";
+import { IServiceSectionProps } from "./ServiceSection.types";
 
-export default function ServiceSection() {
+export default function ServiceSection(props: IServiceSectionProps) {
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.section}>
       <SectionHeader
         title="بيانات الخدمة"
         icon={<FontAwesome5 name={"cross"} />}
       />
-      <View style={styles.card}>{/* <PersonalInfoForm /> */}</View>
+      <View style={globalStyles.card}>
+        <ServiceForm {...props} />
+      </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { marginVertical: 20 },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 24,
-    padding: 20,
-    elevation: 2,
-    borderRightWidth: 5,
-    borderRightColor: colors.secondary[400],
-  },
-});

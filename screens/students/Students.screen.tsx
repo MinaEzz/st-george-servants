@@ -4,9 +4,10 @@ import FiltersList from "@/components/students/filters-list/FiltersList.componen
 import ScreenHeader from "@/components/students/screen-header/ScreenHeader.component";
 import StatsSection from "@/components/students/stats-section/StatsSection.component";
 import StudentsList from "@/components/students/students-list/StudentsList.component";
-import { ATTENDANCE_HISTORY, STUDENTS } from "@/constants/students";
+import { useAttendance } from "@/hooks/useAttendance";
+import { useFollowUp } from "@/hooks/useFollowUp";
+import { useStudents } from "@/hooks/useStudents";
 import { globalStyles } from "@/styles/globals";
-import { checkNeedsFollowUp } from "@/utils/checkNeedsFollowUp";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
@@ -16,6 +17,10 @@ export default function Students() {
   const { filter } = useLocalSearchParams<{ filter?: string }>();
   const [activeFilter, setActiveFilter] = useState(filter || "all");
 
+  const { students } = useStudents();
+  const { statuses } = useFollowUp();
+  const { latestServiceDate, getStatusMap } = useAttendance();
+
   useEffect(() => {
     if (filter) {
       setActiveFilter(filter);
@@ -24,9 +29,15 @@ export default function Students() {
     }
   }, [filter]);
 
+  // حالة كل مخدوم في آخر يوم خدمة مسجل
+  const latestStatusMap = useMemo(
+    () => getStatusMap(latestServiceDate),
+    [getStatusMap, latestServiceDate],
+  );
+
   const filteredStudents = useMemo(() => {
     const query = searchQuery.trim();
-    return STUDENTS.filter((student) => {
+    return students.filter((student) => {
       const matchesSearch = query
         ? student.name.includes(query) || student.code.includes(query)
         : true;
@@ -34,35 +45,29 @@ export default function Students() {
 
       if (activeFilter === "all") return true;
 
-      const todayStatus = ATTENDANCE_HISTORY[student.id]?.[0];
+      const todayStatus = latestStatusMap[student.id];
       if (activeFilter === "present") return todayStatus === "present";
       if (activeFilter === "absent") return todayStatus === "absent";
 
       if (activeFilter === "follow-up") {
-        const isAutoFollowUp = checkNeedsFollowUp(
-          student.id,
-          ATTENDANCE_HISTORY,
-          4,
-        );
-
-        return isAutoFollowUp;
+        // تلقائي (غياب 4 أسابيع متتالية) + المتابعة اليدوية
+        return statuses[student.id]?.needsFollowUp ?? false;
       }
 
       return true;
     });
-  }, [searchQuery, activeFilter]);
+  }, [students, searchQuery, activeFilter, latestStatusMap, statuses]);
 
   const stats = useMemo(() => {
-    const total = STUDENTS.length;
+    const total = students.length;
 
     if (total === 0) {
       return { total: 0, attendancePercentage: 0 };
     }
 
-    const presentCount = STUDENTS.filter((student) => {
-      const todayStatus = ATTENDANCE_HISTORY[student.id]?.[0];
-      return todayStatus === "present";
-    }).length;
+    const presentCount = students.filter(
+      (student) => latestStatusMap[student.id] === "present",
+    ).length;
 
     const attendancePercentage = Math.round((presentCount / total) * 100);
 
@@ -70,7 +75,7 @@ export default function Students() {
       total,
       attendancePercentage,
     };
-  }, []);
+  }, [students, latestStatusMap]);
 
   return (
     <View style={[globalStyles.container, { position: "relative" }]}>

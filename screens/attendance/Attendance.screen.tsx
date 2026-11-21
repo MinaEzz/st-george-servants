@@ -2,7 +2,7 @@ import AttendanceList from "@/components/attendance/attendance-list/AttendanceLi
 import SaveAttendanceButton from "@/components/attendance/save-attendance-button/SaveAttendanceButton.component";
 import ScreenHeader from "@/components/attendance/screen-header/ScreenHeader.component";
 import Searchbar from "@/components/shared/searchbar/Searchbar.component";
-import { STUDENTS } from "@/constants/students";
+import { useStudents } from "@/hooks/useStudents";
 import { globalStyles } from "@/styles/globals";
 import { useMemo, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,13 +13,15 @@ export default function Attendance() {
     Record<string, string | null>
   >({});
 
+  const { students } = useStudents();
+
   const filteredStudents = useMemo(() => {
     const query = searchQuery.trim();
-    if (!query) return STUDENTS;
-    return STUDENTS.filter(
+    if (!query) return students;
+    return students.filter(
       (s) => s.name.includes(query) || s.code.includes(query),
     );
-  }, [searchQuery]);
+  }, [students, searchQuery]);
 
   const handleStatusChange = (studentId: string, status: string) => {
     setAttendanceData((prev) => ({
@@ -33,7 +35,7 @@ export default function Attendance() {
     const present = values.filter((v) => v === "present").length;
     const absent = values.filter((v) => v === "absent").length;
     const excused = values.filter((v) => v === "excused").length;
-    const total = STUDENTS.length;
+    const total = students.length;
 
     const percentage =
       total > 0 ? Math.round(((present + excused) / total) * 100) : 0;
@@ -44,7 +46,7 @@ export default function Attendance() {
       excused,
       percentage,
     };
-  }, [attendanceData]);
+  }, [attendanceData, students]);
 
   return (
     <SafeAreaView style={[globalStyles.container]}>

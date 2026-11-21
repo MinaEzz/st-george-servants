@@ -1,59 +1,40 @@
+import Avatar from "@/components/shared/avatar/Avatar.component";
 import { colors } from "@/styles/globals";
-import { Feather } from "@expo/vector-icons";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import { IImageSectionProps } from "./ImageSection.types";
 
-export default function ImageSection() {
+export default function ImageSection({ name, gender }: IImageSectionProps) {
   return (
-    <View style={styles.imageSection}>
-      <TouchableOpacity style={styles.imagePicker}>
-        <Feather name="camera" size={28} style={styles.cameraIcon} />
-        <Text style={styles.imagePickerText}>أضف صورة</Text>
-        <View style={styles.editIconBadge}>
-          <Feather name="edit-2" size={12} style={styles.editIcon} />
-        </View>
-      </TouchableOpacity>
+    <View style={styles.container}>
+      <View style={styles.ring}>
+        <Avatar name={name} gender={gender} size={104} />
+      </View>
+      <Text style={styles.caption}>
+        الصورة الرمزية بتتكوّن تلقائياً من اسم المخدوم، ورفع الصور هيتوفر في
+        تحديث قادم
+      </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  imageSection: {
+  container: {
     alignItems: "center",
-    marginBottom: 20,
+    gap: 12,
+    marginBottom: 8,
   },
-  imagePicker: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 1.5,
-    borderColor: colors.neutral[400],
+  ring: {
+    padding: 6,
+    borderRadius: 999,
+    borderWidth: 2,
     borderStyle: "dashed",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "transparent",
-    position: "relative",
+    borderColor: colors.secondary[400],
   },
-  cameraIcon: {
-    color: colors.primary[900],
-  },
-  imagePickerText: {
+  caption: {
+    textAlign: "center",
     fontFamily: "Tajawal",
-    fontSize: 14,
-    color: colors.neutral[600],
-    marginTop: 4,
-  },
-  editIcon: {
-    color: "#fff",
-  },
-  editIconBadge: {
-    position: "absolute",
-    bottom: 2,
-    right: 2,
-    backgroundColor: colors.secondary[600],
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
+    fontSize: 12,
+    color: colors.neutral[500],
+    paddingHorizontal: 24,
   },
 });

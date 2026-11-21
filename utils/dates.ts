@@ -139,3 +139,14 @@ export function formatRelativeArabic(
     many: "سنة",
   })}`;
 }
+
+/** عدد أيام شهر معين (month من 1 إلى 12) */
+export function daysInMonth(year: number, month: number): number {
+  return new Date(year, month, 0).getDate();
+}
+
+/** مثال: "20/11/2019" (dd/mm/yyyy) */
+export function formatNumericDate(value: ISODateString): string {
+  const [year, month, day] = value.split("-");
+  return `${day}/${month}/${year}`;
+}

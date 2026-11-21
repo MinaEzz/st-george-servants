@@ -1,50 +1,59 @@
-import { colors, globalStyles } from "@/styles/globals";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import DateField from "@/components/shared/form/date-field/DateField.component";
+import FormField from "@/components/shared/form/form-field/FormField.component";
+import SelectField from "@/components/shared/form/select-field/SelectField.component";
+import { GENDER_OPTIONS } from "@/constants";
+import { globalStyles } from "@/styles/globals";
+import type { Gender } from "@/types/common.types";
+import type { IStudentFormSectionProps } from "@/types/student-form.types";
+import { formatAge } from "@/utils/calcAge";
+import { StyleSheet, View } from "react-native";
 
-export default function PersonalInfoForm() {
+export default function PersonalInfoForm({
+  values,
+  errors,
+  onChange,
+}: IStudentFormSectionProps) {
+  const ageText = values.birthDate ? formatAge(values.birthDate) : "";
+
   return (
     <View style={globalStyles.form}>
-      <View style={globalStyles.inputGroup}>
-        <Text style={globalStyles.label}>الاسم الكامل</Text>
-        <TextInput
-          style={globalStyles.input}
-          placeholder="أدخل اسم المخدوم رباعي"
-          placeholderTextColor={colors.neutral[400]}
-          value={""}
-        />
-      </View>
+      <FormField
+        label="الاسم الكامل"
+        required
+        value={values.name}
+        onChangeText={(text) => onChange("name", text)}
+        placeholder="مثال: مارك ماجد جورج"
+        error={errors.name}
+        returnKeyType="next"
+      />
 
       <View style={styles.row}>
-        <View style={[globalStyles.inputGroup, { flex: 1 }]}>
-          <Text style={globalStyles.label}>النوع</Text>
-          <TextInput
-            style={globalStyles.input}
-            placeholder="اختر النوع"
-            placeholderTextColor={colors.neutral[400]}
-            value={""}
-          />
-        </View>
-
-        <View style={[globalStyles.inputGroup, { flex: 1 }]}>
-          <Text style={globalStyles.label}>تاريخ الميلاد</Text>
-          <TextInput
-            style={globalStyles.input}
-            placeholder="dd/mm/yyyy"
-            placeholderTextColor={colors.neutral[400]}
-            value={""}
-          />
-        </View>
-      </View>
-
-      <View style={globalStyles.inputGroup}>
-        <Text style={globalStyles.label}>العمر</Text>
-        <TextInput
-          style={globalStyles.input}
-          placeholder="عمر المخدوم يحسب تلقائياً"
-          placeholderTextColor={colors.neutral[400]}
-          value={""}
+        <SelectField
+          label="النوع"
+          required
+          value={values.gender}
+          options={GENDER_OPTIONS}
+          onChange={(value) => onChange("gender", value as Gender)}
+          placeholder="اختر النوع"
+          error={errors.gender}
+          containerStyle={styles.flex}
+        />
+        <DateField
+          label="تاريخ الميلاد"
+          required
+          value={values.birthDate}
+          onChange={(value) => onChange("birthDate", value)}
+          error={errors.birthDate}
+          containerStyle={styles.flex}
         />
       </View>
+
+      <FormField
+        label="السن"
+        readOnly
+        value={ageText}
+        placeholder="بيتحسب تلقائياً من تاريخ الميلاد"
+      />
     </View>
   );
 }
@@ -52,7 +61,9 @@ export default function PersonalInfoForm() {
 const styles = StyleSheet.create({
   row: {
     flexDirection: "row-reverse",
-    alignItems: "center",
     gap: 20,
+  },
+  flex: {
+    flex: 1,
   },
 });

@@ -1,28 +1,20 @@
 import SectionHeader from "@/components/shared/section-header/SectionHeader.component";
-import { colors } from "@/styles/globals";
+import { globalStyles } from "@/styles/globals";
+import type { IStudentFormSectionProps } from "@/types/student-form.types";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
+import ContactInfoForm from "./contact-info-form/ContactInfoForm.component";
 
-export default function ContactInfoSection() {
+export default function ContactInfoSection(props: IStudentFormSectionProps) {
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.section}>
       <SectionHeader
         title="بيانات الاتصال"
         icon={<FontAwesome5 name={"phone"} />}
       />
-      <View style={styles.card}>{/* <PersonalInfoForm /> */}</View>
+      <View style={globalStyles.card}>
+        <ContactInfoForm {...props} />
+      </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { marginVertical: 20 },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 24,
-    padding: 20,
-    elevation: 2,
-    borderRightWidth: 5,
-    borderRightColor: colors.secondary[400],
-  },
-});

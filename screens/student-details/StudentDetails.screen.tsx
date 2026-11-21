@@ -4,17 +4,19 @@ import NotesSection from "@/components/student-details/notes-section/NotesSectio
 import PersonalInfoSection from "@/components/student-details/personal-info-section/PersonalInfoSection.component";
 import QuickActionsSection from "@/components/student-details/quick-actions-section/QuickActionsSection.component";
 import ScreenHeader from "@/components/student-details/screen-header/ScreenHeader.component";
-import { CLASSES } from "@/constants/classes";
-import { STAGES } from "@/constants/stages";
-import { STUDENTS } from "@/constants/students";
+import { useClasses } from "@/hooks/useClasses";
+import { useStudents } from "@/hooks/useStudents";
 import { globalStyles } from "@/styles/globals";
 import { ScrollView, View } from "react-native";
 
 export default function StudentDetails({ studentId }: { studentId: string }) {
-  const student = STUDENTS.find((s) => s.id === studentId);
-  const className = CLASSES.find((c) => c.id === student?.classId)?.name;
-  const stageName = STAGES.find((s) => s.id === student?.stageId)?.name;
-  console.log(student);
+  const { getStudentById } = useStudents();
+  const { getClassById, getStageById } = useClasses();
+
+  const student = getStudentById(studentId);
+  const className = student ? getClassById(student.classId)?.name : undefined;
+  const stageName = student ? getStageById(student.stageId)?.name : undefined;
+
   if (!student) return null;
 
   return (

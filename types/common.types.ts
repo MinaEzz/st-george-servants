@@ -7,3 +7,9 @@ export type ISODateString = string;
 
 /** تاريخ ووقت بصيغة ISO 8601 (مثال: 2026-11-20T18:00:00.000Z) */
 export type ISODateTimeString = string;
+
+/** خيار في قايمة الاختيار (SelectField) */
+export interface ISelectOption {
+  label: string;
+  value: string;
+}
