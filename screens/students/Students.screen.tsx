@@ -7,6 +7,7 @@ import StudentsList from "@/components/students/students-list/StudentsList.compo
 import { useAttendance } from "@/hooks/useAttendance";
 import { useFollowUp } from "@/hooks/useFollowUp";
 import { useStudents } from "@/hooks/useStudents";
+import { useSession } from "@/store/session.store";
 import { globalStyles } from "@/styles/globals";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
@@ -17,9 +18,19 @@ export default function Students() {
   const { filter } = useLocalSearchParams<{ filter?: string }>();
   const [activeFilter, setActiveFilter] = useState(filter || "all");
 
-  const { students } = useStudents();
+  const { scope } = useSession();
+  const { students: allStudents } = useStudents();
   const { statuses } = useFollowUp();
-  const { latestServiceDate, getStatusMap } = useAttendance();
+  const { latestServiceDate, getStatusMap } = useAttendance(scope.classId);
+
+  // لو الخادم اختار فصل بنعرض مخدومين الفصل ده بس، وإلا بنعرض الكل
+  const students = useMemo(
+    () =>
+      scope.classId
+        ? allStudents.filter((student) => student.classId === scope.classId)
+        : allStudents,
+    [allStudents, scope.classId],
+  );
 
   useEffect(() => {
     if (filter) {
@@ -79,7 +90,10 @@ export default function Students() {
 
   return (
     <View style={[globalStyles.container, { position: "relative" }]}>
-      <ScreenHeader className="الفصل الثاني" stageName="ابتدائي" />
+      <ScreenHeader
+        className={scope.className ?? "كل الفصول"}
+        stageName={scope.stageName ?? "-"}
+      />
       <StatsSection
         total={stats.total}
         attendancePercentage={stats.attendancePercentage}

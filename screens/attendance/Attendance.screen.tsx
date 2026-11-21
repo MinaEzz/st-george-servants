@@ -1,73 +1,161 @@
 import AttendanceList from "@/components/attendance/attendance-list/AttendanceList.component";
+import BulkActions from "@/components/attendance/bulk-actions/BulkActions.component";
+import DateSelector from "@/components/attendance/date-selector/DateSelector.component";
+import NoClassState from "@/components/attendance/no-class-state/NoClassState.component";
 import SaveAttendanceButton from "@/components/attendance/save-attendance-button/SaveAttendanceButton.component";
 import ScreenHeader from "@/components/attendance/screen-header/ScreenHeader.component";
+import ErrorState from "@/components/shared/error-state/ErrorState.component";
 import Searchbar from "@/components/shared/searchbar/Searchbar.component";
-import { useStudents } from "@/hooks/useStudents";
-import { globalStyles } from "@/styles/globals";
+import { useAttendanceSheet } from "@/hooks/useAttendanceSheet";
+import { useSession } from "@/store/session.store";
+import { colors, globalStyles } from "@/styles/globals";
+import { toArabicDigits } from "@/utils/arabic";
 import { useMemo, useState } from "react";
+import { ActivityIndicator, Alert, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Attendance() {
+  const { scope } = useSession();
+  const sheet = useAttendanceSheet(scope.classId);
   const [searchQuery, setSearchQuery] = useState("");
-  const [attendanceData, setAttendanceData] = useState<
-    Record<string, string | null>
-  >({});
-
-  const { students } = useStudents();
 
   const filteredStudents = useMemo(() => {
     const query = searchQuery.trim();
-    if (!query) return students;
-    return students.filter(
-      (s) => s.name.includes(query) || s.code.includes(query),
+    if (!query) return sheet.students;
+    return sheet.students.filter(
+      (student) => student.name.includes(query) || student.code.includes(query),
     );
-  }, [students, searchQuery]);
+  }, [sheet.students, searchQuery]);
 
-  const handleStatusChange = (studentId: string, status: string) => {
-    setAttendanceData((prev) => ({
-      ...prev,
-      [studentId]: prev[studentId] === status ? null : status,
-    }));
+  if (!scope.classId) {
+    return (
+      <SafeAreaView style={globalStyles.container}>
+        <NoClassState />
+      </SafeAreaView>
+    );
+  }
+
+  if (sheet.loadError) {
+    return (
+      <SafeAreaView style={globalStyles.container}>
+        <ErrorState message={sheet.loadError} onRetry={sheet.reload} />
+      </SafeAreaView>
+    );
+  }
+
+  if (sheet.isLoading && sheet.students.length === 0) {
+    return (
+      <SafeAreaView style={[globalStyles.container, styles.center]}>
+        <ActivityIndicator size="large" color={colors.primary[900]} />
+      </SafeAreaView>
+    );
+  }
+
+  const handleShiftDate = (direction: 1 | -1) => {
+    if (!sheet.hasChanges) {
+      sheet.shiftDate(direction);
+      return;
+    }
+
+    Alert.alert(
+      "تغييرات غير محفوظة",
+      "لو غيّرت التاريخ هتضيع التغييرات اللي لسه ما اتحفظتش. تكمل؟",
+      [
+        { text: "رجوع", style: "cancel" },
+        {
+          text: "تجاهل التغييرات",
+          style: "destructive",
+          onPress: () => sheet.shiftDate(direction),
+        },
+      ],
+    );
   };
 
-  const stats = useMemo(() => {
-    const values = Object.values(attendanceData);
-    const present = values.filter((v) => v === "present").length;
-    const absent = values.filter((v) => v === "absent").length;
-    const excused = values.filter((v) => v === "excused").length;
-    const total = students.length;
+  const saveNow = async () => {
+    const result = await sheet.save();
 
-    const percentage =
-      total > 0 ? Math.round(((present + excused) / total) * 100) : 0;
+    if (!result.ok && result.error) {
+      Alert.alert("تعذر حفظ الحضور", result.error);
+    }
+  };
 
-    return {
-      present,
-      absent,
-      excused,
-      percentage,
-    };
-  }, [attendanceData, students]);
+  const handleSave = () => {
+    const { unrecorded } = sheet.summary;
+
+    if (unrecorded === 0) {
+      void saveNow();
+      return;
+    }
+
+    Alert.alert(
+      "مخدومين لم يُسجّل لهم حضور",
+      `لسه ${toArabicDigits(unrecorded)} مخدوم من غير تسجيل، وهيفضلوا "لم يُسجّل" ومش هيتحسبوا غياب. تحفظ كده؟`,
+      [
+        { text: "رجوع", style: "cancel" },
+        { text: "احفظ", onPress: () => void saveNow() },
+      ],
+    );
+  };
+
+  const recordedCount =
+    sheet.summary.present + sheet.summary.absent + sheet.summary.excused;
 
   return (
-    <SafeAreaView style={[globalStyles.container]}>
+    <SafeAreaView style={globalStyles.container}>
       <ScreenHeader
-        stats={stats}
-        className="الفصل الثاني"
-        stageName="ابتدائي"
+        stats={sheet.summary}
+        className={scope.className ?? ""}
+        stageName={scope.stageName ?? ""}
+        dateLabel={sheet.dateLabel}
       />
+
+      <DateSelector
+        dateLabel={sheet.dateLabel}
+        isLatest={sheet.isLatestDate}
+        hasRecords={sheet.hasSavedRecords}
+        canGoOlder={sheet.canGoOlder}
+        canGoNewer={sheet.canGoNewer}
+        onOlder={() => handleShiftDate(-1)}
+        onNewer={() => handleShiftDate(1)}
+      />
+
+      <BulkActions
+        onMarkRemainingPresent={sheet.markRemainingPresent}
+        onClearAll={sheet.clearAll}
+        canMarkRemaining={sheet.summary.unrecorded > 0}
+        canClear={recordedCount > 0}
+      />
+
       <Searchbar
         value={searchQuery}
         onChange={setSearchQuery}
         placeholder="ابحث عن مخدوم بالاسم أو الكود..."
       />
+
       <AttendanceList
         students={filteredStudents}
-        attendanceData={attendanceData}
-        onStatusChange={handleStatusChange}
+        attendanceData={sheet.statusMap}
+        onStatusChange={sheet.setStatus}
+        emptyText={
+          sheet.students.length === 0
+            ? "لا يوجد مخدومين في هذا الفصل بعد"
+            : "لا يوجد مخدوم بهذا الإسم..."
+        }
       />
+
       <SaveAttendanceButton
-        onSave={() => console.log("Final Attendance:", attendanceData)}
+        onSave={handleSave}
+        isSaving={sheet.isSaving}
+        changesCount={sheet.changesCount}
+        hasSavedRecords={sheet.hasSavedRecords}
       />
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  center: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

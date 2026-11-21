@@ -1,18 +1,31 @@
-import { colors } from "@/styles/globals";
+import { colors, statusColors } from "@/styles/globals";
+import type { AttendanceStatus } from "@/types/common.types";
 import { getStudentImage } from "@/utils/getStudentImage";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import type { ComponentProps } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { IAttendanceCardProps } from "./AttendanceCard.types";
+
+interface IStatusAction {
+  status: AttendanceStatus;
+  label: string;
+  icon: ComponentProps<typeof Ionicons>["name"];
+}
+
+/** الترتيب من الشمال لليمين زي التصميم الحالي: اعتذر | غائب | حاضر */
+const STATUS_ACTIONS: IStatusAction[] = [
+  { status: "excused", label: "اعتذر", icon: "calendar-outline" },
+  { status: "absent", label: "غائب", icon: "close-circle-outline" },
+  { status: "present", label: "حاضر", icon: "checkmark-circle-outline" },
+];
 
 export default function AttendanceCard({
   student,
   currentStatus,
   onStatusChange,
-}: any) {
+}: IAttendanceCardProps) {
   const router = useRouter();
-  const isPresent = currentStatus === "present";
-  const isAbsent = currentStatus === "absent";
-  const isExcused = currentStatus === "excused";
   const studentImage = getStudentImage(student.image, student.gender);
 
   return (
@@ -44,47 +57,32 @@ export default function AttendanceCard({
       </View>
 
       <View style={styles.actionsContainer}>
-        <TouchableOpacity
-          style={[styles.actionBtn, isExcused && styles.excusedActive]}
-          onPress={() => onStatusChange(student.id, "excused")}
-        >
-          <Ionicons
-            name="calendar-outline"
-            size={20}
-            color={isExcused ? "#F57C00" : colors.neutral[600]}
-          />
-          <Text style={[styles.actionText, isExcused && { color: "#F57C00" }]}>
-            اعتذر
-          </Text>
-        </TouchableOpacity>
+        {STATUS_ACTIONS.map((action) => {
+          const isActive = currentStatus === action.status;
+          const palette = statusColors[action.status];
 
-        <TouchableOpacity
-          style={[styles.actionBtn, isAbsent && styles.absentActive]}
-          onPress={() => onStatusChange(student.id, "absent")}
-        >
-          <Ionicons
-            name="close-circle-outline"
-            size={20}
-            color={isAbsent ? "#D32F2F" : colors.neutral[600]}
-          />
-          <Text style={[styles.actionText, isAbsent && { color: "#D32F2F" }]}>
-            غائب
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.actionBtn, isPresent && styles.presentActive]}
-          onPress={() => onStatusChange(student.id, "present")}
-        >
-          <Ionicons
-            name="checkmark-circle-outline"
-            size={20}
-            color={isPresent ? "#388E3C" : colors.neutral[600]}
-          />
-          <Text style={[styles.actionText, isPresent && { color: "#388E3C" }]}>
-            حاضر
-          </Text>
-        </TouchableOpacity>
+          return (
+            <TouchableOpacity
+              key={action.status}
+              style={[
+                styles.actionBtn,
+                isActive && { backgroundColor: palette.background },
+              ]}
+              onPress={() => onStatusChange(student.id, action.status)}
+            >
+              <Ionicons
+                name={action.icon}
+                size={20}
+                color={isActive ? palette.icon : colors.neutral[600]}
+              />
+              <Text
+                style={[styles.actionText, isActive && { color: palette.icon }]}
+              >
+                {action.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
     </View>
   );
@@ -157,8 +155,4 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: colors.neutral[600],
   },
-
-  presentActive: { backgroundColor: "#E8F5E9" },
-  absentActive: { backgroundColor: "#FFEBEE" },
-  excusedActive: { backgroundColor: "#FFF3E0" },
 });

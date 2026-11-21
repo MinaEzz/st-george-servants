@@ -1,15 +1,18 @@
 import EmptyList from "@/components/shared/empty-list/EmptyList.component";
 import { FlatList, StyleSheet } from "react-native";
 import AttendanceCard from "./attendance-card/AttendanceCard.component";
+import { IAttendanceListProps } from "./AttendanceList.types";
 
 export default function AttendanceList({
   students,
   attendanceData,
   onStatusChange,
-}: any) {
+  emptyText = "لا يوجد مخدوم بهذا الإسم...",
+}: IAttendanceListProps) {
   return (
     <FlatList
       data={students}
+      extraData={attendanceData}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
         <AttendanceCard
@@ -20,7 +23,8 @@ export default function AttendanceList({
       )}
       contentContainerStyle={styles.listContent}
       showsVerticalScrollIndicator={false}
-      ListEmptyComponent={<EmptyList text="لا يوجد مخدوم بهذا الإسم..." />}
+      keyboardShouldPersistTaps="handled"
+      ListEmptyComponent={<EmptyList text={emptyText} />}
     />
   );
 }

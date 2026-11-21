@@ -1,4 +1,4 @@
-import { colors } from "@/styles/globals";
+import { colors, statusColors } from "@/styles/globals";
 import { todayDate } from "@/utils/todayData";
 import { StyleSheet, Text, View } from "react-native";
 import IScreenHeaderProps from "./ScreenHeader.types";
@@ -7,15 +7,15 @@ export default function ScreenHeader({
   stats,
   className,
   stageName,
+  dateLabel,
 }: IScreenHeaderProps) {
-  const today = todayDate();
   return (
     <View style={styles.container}>
       <View style={styles.badge}>
         <Text style={styles.badgeText}>مرحلة {stageName}</Text>
       </View>
       <Text style={styles.title}>تحضير {className}</Text>
-      <Text style={styles.date}>{today}</Text>
+      <Text style={styles.date}>{dateLabel ?? todayDate()}</Text>
 
       <View style={styles.progressSection}>
         <View style={styles.progressInfo}>
@@ -35,15 +35,20 @@ export default function ScreenHeader({
       </View>
 
       <View style={styles.statsSummary}>
-        <Text style={[styles.summaryItem, { color: "#388E3C" }]}>
+        <Text style={[styles.summaryItem, { color: statusColors.present.icon }]}>
           ● {stats.present} حاضر
         </Text>
-        <Text style={[styles.summaryItem, { color: "#D32F2F" }]}>
+        <Text style={[styles.summaryItem, { color: statusColors.absent.icon }]}>
           ● {stats.absent} غائب
         </Text>
-        <Text style={[styles.summaryItem, { color: "#F57C00" }]}>
+        <Text style={[styles.summaryItem, { color: statusColors.excused.icon }]}>
           ● {stats.excused} اعتذار
         </Text>
+        {stats.unrecorded !== undefined ? (
+          <Text style={[styles.summaryItem, { color: colors.neutral[400] }]}>
+            ● {stats.unrecorded} لم يُسجّل
+          </Text>
+        ) : null}
       </View>
     </View>
   );
@@ -54,7 +59,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 24,
     padding: 20,
-    marginBottom: 15,
+    marginBottom: 12,
     elevation: 4,
   },
   badge: {
@@ -101,6 +106,7 @@ const styles = StyleSheet.create({
   statsSummary: {
     flexDirection: "row-reverse",
     justifyContent: "center",
+    flexWrap: "wrap",
     gap: 15,
     marginTop: 15,
   },
